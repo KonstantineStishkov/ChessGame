@@ -10,6 +10,9 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject OnlineMenu;
     [SerializeField] GameObject Log;
 
+    [Header("Functional objects")]
+    [SerializeField] ServerList serverList;
+
     [Header("Chess Board")]
     [SerializeField] ChessBoard chessBoard;
 
@@ -26,29 +29,29 @@ public class GameUI : MonoBehaviour
         Log.SetActive(false);
     }
 
-    //Buttons
+    //Main menu Buttons
     public void OnLocalGameButton()
     {
-        Debug.Log("OnLocalGameButton");
+        HideAllMenus();
     }
 
     public void OnOnlineGameButton()
     {
-        MainMenu.SetActive(false);
+        HideAllMenus();
         OnlineMenu.SetActive(true);
     }
 
     public void onAgainstAIButton()
     {
-        MainMenu.SetActive(false);
+        HideAllMenus();
         DifficultyMenu.SetActive(true);
     }
 
+    //Difficulty Menu Buttons
     public void onEasyGameButton()
     {
         Debug.Log("Easy Difficulty");
-        MainMenu.SetActive(false);
-        DifficultyMenu.SetActive(false);
+        HideAllMenus();
         Log.SetActive(true);
         chessBoard.StartGame(Difficulty.Easy);
     }
@@ -56,10 +59,28 @@ public class GameUI : MonoBehaviour
     public void onNormalGameButton()
     {
         Debug.Log("Normal Difficulty");
+        HideAllMenus();
     }
 
     public void onHardGameButton()
     {
         Debug.Log("Hard Difficulty");
+        HideAllMenus();
+    }
+
+    //Online Game Buttons
+    public void onHostGame()
+    {
+        serverList.RegisterGameServer();
+        serverList.RefreshServerList();
+    }
+
+    //Common functions
+    private void HideAllMenus()
+    {
+        MainMenu.SetActive(false);
+        DifficultyMenu.SetActive(false);
+        OnlineMenu.SetActive(false);
+        Log.SetActive(false);
     }
 }

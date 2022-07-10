@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,16 +20,33 @@ public class ServerList : MonoBehaviour
     [SerializeField] string connectionString;
 
     const string getGamesAddress = "http://89.208.137.229/Chess_game/GetGames.php";
+    const string hostGameAddress = "http://89.208.137.229/Chess_game/HostGame.php";
+    const string testAddress = "http://89.208.137.229/Chess_game/TestPost.php";
 
     public void Awake()
     {
-        ShowServerList();
+        RefreshServerList();
     }
 
-    private void ShowServerList()
+    public void RefreshServerList()
     {
         ClearServerList();
         FillServerList(GetServerList());
+    }
+
+    public void RegisterGameServer()
+    {
+        byte[] responseBytes = new byte[512];
+        NameValueCollection data = new NameValueCollection();
+        data.Add("port", "8007");
+        data.Add("serverName", "testName");
+        data.Add("difficulty", "1");
+        using (WebClient client = new WebClient())
+        {
+            responseBytes = client.UploadValues(hostGameAddress, "POST", data);
+        }
+
+        string response = Encoding.UTF8.GetString(responseBytes);
     }
 
     private void ClearServerList()
@@ -43,13 +61,14 @@ public class ServerList : MonoBehaviour
 
     private List<Server_button> GetServerList()
     {
-        WebClient client = new WebClient();
+        byte[] responseBytes;
+        using (WebClient client = new WebClient())
+        {
+            NameValueCollection data = new NameValueCollection();
+            responseBytes = client.UploadValues(getGamesAddress, "POST", data);
+        }
 
-        var data = new NameValueCollection();
-
-        byte[] opBytes = client.UploadValues(getGamesAddress, "POST", data);
-
-        string response = Encoding.UTF8.GetString(opBytes);
+        string response = Encoding.UTF8.GetString(responseBytes);
 
         string[] servers = response.Split('*');
 
@@ -64,25 +83,25 @@ public class ServerList : MonoBehaviour
             Regex regex = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
             int num;
 
-            if(regex.IsMatch(text))
+            if (regex.IsMatch(text))
             {
                 serverButton.ip = text;
                 continue;
             }
 
-            if(DateTime.TryParse(text, out DateTime date))
+            if (DateTime.TryParse(text, out DateTime date))
             {
                 serverButton.date = date;
                 continue;
             }
 
-            if(int.TryParse(text, out num))
+            if (int.TryParse(text, out num))
             {
-                if(num > 0 && num < 4)
+                if (num > 0 && num < 4)
                 {
                     serverButton.difficulty = num;
                 }
-                else if(num < 65537)
+                else if (num < 65537)
                 {
                     serverButton.port = num;
                 }
