@@ -22,6 +22,7 @@ public class ServerList : MonoBehaviour
     const string getGamesAddress = "http://89.208.137.229/Chess_game/GetGames.php";
     const string hostGameAddress = "http://89.208.137.229/Chess_game/HostGame.php";
     const string testAddress = "http://89.208.137.229/Chess_game/TestPost.php";
+    const string getIpAddress = "http://checkip.dyndns.org";
 
     public void Awake()
     {
@@ -36,8 +37,9 @@ public class ServerList : MonoBehaviour
 
     public void RegisterGameServer()
     {
-        byte[] responseBytes = new byte[512];
+        byte[] responseBytes;
         NameValueCollection data = new NameValueCollection();
+        data.Add("ip", GetMyIP());
         data.Add("port", "8007");
         data.Add("serverName", "testName");
         data.Add("difficulty", "1");
@@ -47,6 +49,22 @@ public class ServerList : MonoBehaviour
         }
 
         string response = Encoding.UTF8.GetString(responseBytes);
+    }
+
+    private string GetMyIP()
+    {
+        byte[] responseBytes;
+        NameValueCollection data = new NameValueCollection();
+        using (WebClient client = new WebClient())
+        {
+            responseBytes = client.DownloadData(getIpAddress);
+        }
+
+        string response = Encoding.UTF8.GetString(responseBytes);
+
+        string result = response.Split(':')[1].Split('<')[0];
+
+        return result;
     }
 
     private void ClearServerList()
