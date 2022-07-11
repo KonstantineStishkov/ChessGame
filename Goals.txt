@@ -1,0 +1,10 @@
+1. Authentication
+2. Online Gameplay
+3. Release
+4. Test
+5. Hashed passwords
+6. Medium difficulty
+7. Hard difficulty
+8. UI images polishing
+9. HotSeat Gameplay polishing
+10. Refactoring
