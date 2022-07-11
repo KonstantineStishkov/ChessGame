@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class ServerList : MonoBehaviour
 {
@@ -16,55 +13,44 @@ public class ServerList : MonoBehaviour
     [SerializeField] Server_button serverButton;
     [SerializeField] GameObject list;
 
-    [Header("Settings")]
-    [SerializeField] string connectionString;
+    //[Header("Functional")]
+    //[SerializeField] IDbAdapter DbAdapter;
 
-    const string getGamesAddress = "http://89.208.137.229/Chess_game/GetGames.php";
-    const string hostGameAddress = "http://89.208.137.229/Chess_game/HostGame.php";
-    const string testAddress = "http://89.208.137.229/Chess_game/TestPost.php";
-    const string getIpAddress = "http://checkip.dyndns.org";
+    private string ServerName;
+    private IDbAdapter DbAdapter;
 
     public void Awake()
     {
         RefreshServerList();
     }
 
+    public ServerList(IDbAdapter dbAdapter, string name)
+    {
+        ServerName = name;
+        DbAdapter = dbAdapter;
+    }
+
     public void RefreshServerList()
     {
         ClearServerList();
-        FillServerList(GetServerList());
+        FillServerList(DbAdapter.GetServers());
     }
 
     public void RegisterGameServer()
     {
-        byte[] responseBytes;
-        NameValueCollection data = new NameValueCollection();
-        data.Add("ip", GetMyIP());
-        data.Add("port", "8007");
-        data.Add("serverName", "testName");
-        data.Add("difficulty", "1");
-        using (WebClient client = new WebClient())
-        {
-            responseBytes = client.UploadValues(hostGameAddress, "POST", data);
-        }
+        DbAdapter.SendServerData(ServerName, 1);
 
-        string response = Encoding.UTF8.GetString(responseBytes);
+        RefreshServerList();
     }
 
-    private string GetMyIP()
+    public void ServerSelected(Server_button button, List<Server_button> serverButtons)
     {
-        byte[] responseBytes;
-        NameValueCollection data = new NameValueCollection();
-        using (WebClient client = new WebClient())
+        button.isSelected = true;
+        foreach (Server_button item in serverButtons)
         {
-            responseBytes = client.DownloadData(getIpAddress);
+            if (!item.Equals(button))
+                item.isSelected = false;
         }
-
-        string response = Encoding.UTF8.GetString(responseBytes);
-
-        string result = response.Split(':')[1].Split('<')[0];
-
-        return result;
     }
 
     private void ClearServerList()
@@ -77,75 +63,9 @@ public class ServerList : MonoBehaviour
         }
     }
 
-    private List<Server_button> GetServerList()
-    {
-        byte[] responseBytes;
-        using (WebClient client = new WebClient())
-        {
-            NameValueCollection data = new NameValueCollection();
-            responseBytes = client.UploadValues(getGamesAddress, "POST", data);
-        }
-
-        string response = Encoding.UTF8.GetString(responseBytes);
-
-        string[] servers = response.Split('*');
-
-        List<Server_button> server_list = new List<Server_button>();
-        Server_button serverButton = new Server_button();
-
-        foreach (string item in servers)
-        {
-            var text = item.Replace("\n", "");
-            text = text.Replace("@", "");
-            item.Trim();
-            Regex regex = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
-            int num;
-
-            if (regex.IsMatch(text))
-            {
-                serverButton.ip = text;
-                continue;
-            }
-
-            if (DateTime.TryParse(text, out DateTime date))
-            {
-                serverButton.date = date;
-                continue;
-            }
-
-            if (int.TryParse(text, out num))
-            {
-                if (num > 0 && num < 4)
-                {
-                    serverButton.difficulty = num;
-                }
-                else if (num < 65537)
-                {
-                    serverButton.port = num;
-                }
-
-                continue;
-            }
-
-            if (item == "@")
-            {
-                server_list.Add(serverButton);
-                serverButton = new Server_button();
-                continue;
-            }
-
-            if (item != null && serverButton.serverName == null)
-            {
-                serverButton.serverName = item;
-            }
-        }
-
-        return server_list;
-    }
-
     private void FillServerList(List<Server_button> serverButtons)
     {
-        foreach (var item in serverButtons)
+        foreach (Server_button item in serverButtons)
         {
             Server_button button = Instantiate(serverButton, transform);
             button.serverName = item.serverName;
@@ -154,6 +74,9 @@ public class ServerList : MonoBehaviour
             button.date = item.date;
             button.difficulty = item.difficulty;
             button.SetData();
+
+            Button btn = button.GetComponent(typeof(Button)) as Button;
+            btn.onClick.AddListener(() => ServerSelected(button, serverButtons));
         }
     }
 }

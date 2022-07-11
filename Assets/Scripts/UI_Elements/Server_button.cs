@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -20,6 +18,7 @@ public class Server_button : MonoBehaviour
     public int port;
     public int difficulty;
     public DateTime date;
+    public bool isSelected;
 
 
     public void SetData()
@@ -28,6 +27,8 @@ public class Server_button : MonoBehaviour
         SetServerName();
         SetFresh();
     }
+
+
 
     private int fresh
     {
