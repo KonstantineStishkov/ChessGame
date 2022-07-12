@@ -1,4 +1,4 @@
-1. Authentication
+1. Authentication  	-completed
 2. Online Gameplay
 3. Release
 4. Test
@@ -8,3 +8,4 @@
 8. UI images polishing
 9. HotSeat Gameplay polishing
 10. Refactoring
+11. Set google authentication
