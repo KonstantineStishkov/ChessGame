@@ -24,7 +24,7 @@ public class ServerList : MonoBehaviour
         RefreshServerList();
     }
 
-    public ServerList(IDbAdapter dbAdapter, string name)
+    public void Initialize(IDbAdapter dbAdapter, string name)
     {
         ServerName = name;
         DbAdapter = dbAdapter;

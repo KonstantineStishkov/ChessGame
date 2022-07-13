@@ -12,18 +12,25 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject OnlineMenu;
     [SerializeField] GameObject Log;
 
+    [Header("Top Bar")]
+    [SerializeField] GameObject TopBar;
+    [SerializeField] GameObject[] StarObjects;
+    [SerializeField] Sprite[] StarIcons;
+    [SerializeField] TextMeshProUGUI PlayerNameTMP;
+
+
     [Header("Input Fields")]
     [SerializeField] TMP_InputField Login;
     [SerializeField] TMP_InputField Password;
 
-    //[Header("Functional objects")]
-    //[SerializeField] ServerList serverList;
+    [Header("Functional objects")]
+    [SerializeField] ServerList serverList;
 
     [Header("Chess Board")]
     [SerializeField] ChessBoard chessBoard;
 
     private IDbAdapter dbAdapter;
-    private ServerList serverList;
+    private Player player;
 
     public static GameUI Instance { get; set; }
 
@@ -31,8 +38,17 @@ public class GameUI : MonoBehaviour
     {
         Instance = this;
         HideAllMenus();
-        AuthenticationMenu.SetActive(true);
-        dbAdapter = new MySqlAdapter();
+
+        if(player == null)
+        {
+            AuthenticationMenu.SetActive(true);
+            dbAdapter = new MySqlAdapter();
+        }
+        else
+        {
+            MainMenu.SetActive(true);
+            TopBar.SetActive(true);
+        }
     }
 
     //Get Name Window
@@ -42,11 +58,12 @@ public class GameUI : MonoBehaviour
     }
     public void OnLoginButton()
     {
-        if (dbAdapter.Login(Login.text, Password.text))
+        if (dbAdapter.Login(Login.text, Password.text, out player))
         {
-            serverList = new ServerList(dbAdapter, Login.text);
             HideAllMenus();
             MainMenu.SetActive(true);
+            FillTopBar();
+            TopBar.SetActive(true);
         }
     }
 
@@ -59,6 +76,7 @@ public class GameUI : MonoBehaviour
     public void OnOnlineGameButton()
     {
         HideAllMenus();
+        serverList.Initialize(dbAdapter, Login.text);
         OnlineMenu.SetActive(true);
     }
 
@@ -99,6 +117,18 @@ public class GameUI : MonoBehaviour
     public void OnRefreshList()
     {
         serverList.RefreshServerList();
+    }
+
+    //Top Bar
+    private void FillTopBar()
+    {
+        for(int i = 0; i < 5; i++)
+        {
+            UnityEngine.UI.Image renderer = StarObjects[i].GetComponent(typeof(UnityEngine.UI.Image)) as UnityEngine.UI.Image;
+            renderer.sprite = player.Level > i ? StarIcons[1] : StarIcons[0];                
+        }
+
+        PlayerNameTMP.text = player.Name;
     }
 
     //Common functions
