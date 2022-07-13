@@ -1,11 +1,29 @@
-1. Authentication  	-completed
-2. Online Gameplay
-3. Release
-4. Test
-5. Hashed passwords
-6. Medium difficulty
-7. Hard difficulty
-8. UI images polishing
-9. HotSeat Gameplay polishing
-10. Refactoring
-11. Set google authentication
+1. Overall
+- Release
+- Test
+- Refactoring
+
+2. Gameplay
+- HotSeat Gameplay polishing
+
+3. Online Game:
+- Authentication  	-completed
+- Online Gameplay
+
+4. Security
+- Hashed passwords
+- Google authentication
+
+5. AI
+- Medium difficulty
+- Hard difficulty
+
+6. UI
+- UI images polishing
+- Calibrate screen turning and UI composition
+
+7. Modding
+- Server to storage files
+- External model uploading
+- External texture maps uploading
+- External GUI elements uploading
