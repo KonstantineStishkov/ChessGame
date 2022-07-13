@@ -383,7 +383,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960, y: -153.42}
+  m_AnchoredPosition: {x: 960, y: -153.41998}
   m_SizeDelta: {x: 1920, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &76238688
@@ -1336,7 +1336,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 424638789}
         m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-        m_MethodName: onNormalGameButton
+        m_MethodName: OnNormalGameButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1687,7 +1687,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 424638789}
         m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-        m_MethodName: onHostGame
+        m_MethodName: OnHostGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2481,7 +2481,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 424638789}
         m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-        m_MethodName: onAgainstAIButton
+        m_MethodName: OnAgainstAIButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3158,7 +3158,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 424638789}
         m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-        m_MethodName: onHardGameButton
+        m_MethodName: OnHardGameButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4283,7 +4283,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960, y: -153.42}
+  m_AnchoredPosition: {x: 960, y: -153.41998}
   m_SizeDelta: {x: 1920, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1258941041
@@ -5195,7 +5195,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960, y: -153.42}
+  m_AnchoredPosition: {x: 960, y: -153.41998}
   m_SizeDelta: {x: 1920, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1474808145
@@ -5310,7 +5310,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 424638789}
         m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-        m_MethodName: onEasyGameButton
+        m_MethodName: OnEasyGameButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5797,8 +5797,8 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
@@ -7750,7 +7750,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 424638789}
         m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-        m_MethodName: onRefreshList
+        m_MethodName: OnRefreshList
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
