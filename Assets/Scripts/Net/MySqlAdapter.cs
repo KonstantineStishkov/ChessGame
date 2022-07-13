@@ -13,6 +13,7 @@ public class MySqlAdapter : IDbAdapter
     const string hostGameAddress = "http://89.208.137.229/Chess_game/HostGame.php";
     const string registerAddress = "http://89.208.137.229/Chess_game/RegisterUser.php";
     const string loginAddress = "http://89.208.137.229/Chess_game/LoginUser.php";
+    const string getExpAddress = "http://89.208.137.229/Chess_game/GetUserExp.php";
     const string getIpAddress = "http://checkip.dyndns.org";
 
     const string isSuccess = "1";
@@ -34,11 +35,25 @@ public class MySqlAdapter : IDbAdapter
         return SendRequest(registerAddress, ComposeUserData(userName, password)) == isSuccess;
     }
 
-    public bool Login(string userName, string password)
+    public bool Login(string userName, string password, out Player player)
     {
-        return SendRequest(loginAddress, ComposeUserData(userName, password)) == isSuccess;
+        player = new Player();
+        player.Name = userName;
+
+        bool result = SendRequest(loginAddress, ComposeUserData(userName, password)) == isSuccess;
+        if (result)
+            player.Experience = GetPlayerExperience(userName, password);
+
+        return result;
     }
 
+    private int GetPlayerExperience(string userName, string password)
+    {
+        if (int.TryParse(SendRequest(getExpAddress, ComposeUserData(userName, password)), out int exp))
+            return exp;
+        else
+            throw new ArgumentException();
+    }
     private string GetMyIP()
     {
         string response = SendRequest(getIpAddress);
