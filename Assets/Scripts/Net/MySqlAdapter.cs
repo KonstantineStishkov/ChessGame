@@ -18,9 +18,9 @@ public class MySqlAdapter : IDbAdapter
 
     const string isSuccess = "1";
 
-    public bool SendServerData(string serverName, int difficulty)
+    public bool SendServerData(string serverName, ushort port, int difficulty)
     {
-        return SendRequest(hostGameAddress, ComposeServerData(serverName, difficulty)) != null;
+        return SendRequest(hostGameAddress, ComposeServerData(serverName, port, difficulty)) != null;
     }
 
     public List<Server_button> GetServers()
@@ -118,11 +118,11 @@ public class MySqlAdapter : IDbAdapter
         return server_list;
     }
 
-    private NameValueCollection ComposeServerData(string serverName, int difficulty)
+    private NameValueCollection ComposeServerData(string serverName, ushort port, int difficulty)
     {
         NameValueCollection data = new NameValueCollection();
         data.Add("ip", GetMyIP());
-        data.Add("port", "8007");
+        data.Add("port", port.ToString());
         data.Add("serverName", serverName);
         data.Add("difficulty", difficulty.ToString());
 

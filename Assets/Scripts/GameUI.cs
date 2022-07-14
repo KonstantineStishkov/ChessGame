@@ -25,9 +25,14 @@ public class GameUI : MonoBehaviour
 
     [Header("Functional objects")]
     [SerializeField] ServerList serverList;
+    [SerializeField] Server server;
+    [SerializeField] Client client;
 
     [Header("Chess Board")]
     [SerializeField] ChessBoard chessBoard;
+
+    [Header("Settings")]
+    [SerializeField] ushort port;
 
     private IDbAdapter dbAdapter;
     private Player player;
@@ -71,18 +76,20 @@ public class GameUI : MonoBehaviour
     public void OnLocalGameButton()
     {
         HideAllMenus();
+        ConnectToSelf();
     }
 
     public void OnOnlineGameButton()
     {
         HideAllMenus();
-        serverList.Initialize(dbAdapter, Login.text);
+        serverList.Initialize(dbAdapter, Login.text, player.Level);
         OnlineMenu.SetActive(true);
     }
 
     public void OnAgainstAIButton()
     {
         HideAllMenus();
+        ConnectToSelf();
         DifficultyMenu.SetActive(true);
     }
 
@@ -110,13 +117,27 @@ public class GameUI : MonoBehaviour
     //Online Game Buttons
     public void OnHostGame()
     {
-        serverList.RegisterGameServer();
+        serverList.RegisterGameServer(port);
         serverList.RefreshServerList();
+        ConnectToSelf();
+    }
+
+    public void OnJoinGame()
+    {
+        HideAllMenus();
+        client.Init(serverList.SelectedIP, port);
     }
 
     public void OnRefreshList()
     {
         serverList.RefreshServerList();
+    }
+
+    public void OnBack()
+    {
+        server.Shutdown();
+        HideAllMenus();
+        MainMenu.SetActive(true);
     }
 
     //Top Bar
@@ -139,5 +160,11 @@ public class GameUI : MonoBehaviour
         DifficultyMenu.SetActive(false);
         OnlineMenu.SetActive(false);
         Log.SetActive(false);
+    }
+
+    private void ConnectToSelf()
+    {
+        server.Init(8007);
+        client.Init("127.0.0.1", 8007);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IDbAdapter
 {
-    public bool SendServerData(string serverName, int difficulty);
+    public bool SendServerData(string serverName, ushort port, int difficulty);
     public List<Server_button> GetServers();
     public bool RegisterNewUser(string userName, string password);
     public bool Login(string userName, string password, out Player player);

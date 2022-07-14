@@ -13,21 +13,21 @@ public class ServerList : MonoBehaviour
     [SerializeField] Server_button serverButton;
     [SerializeField] GameObject list;
 
-    //[Header("Functional")]
-    //[SerializeField] IDbAdapter DbAdapter;
-
-    private string ServerName;
     private IDbAdapter DbAdapter;
+    public string SelectedIP { get; private set; }
+    public string ServerName { get; private set; }
+    public int Difficulty { get; private set; }
 
     public void Awake()
     {
         RefreshServerList();
     }
 
-    public void Initialize(IDbAdapter dbAdapter, string name)
+    public void Initialize(IDbAdapter dbAdapter, string name, int difficulty)
     {
         ServerName = name;
         DbAdapter = dbAdapter;
+        Difficulty = difficulty;
     }
 
     public void RefreshServerList()
@@ -36,9 +36,9 @@ public class ServerList : MonoBehaviour
         FillServerList(DbAdapter.GetServers());
     }
 
-    public void RegisterGameServer()
+    public void RegisterGameServer(ushort port)
     {
-        DbAdapter.SendServerData(ServerName, 1);
+        DbAdapter.SendServerData(ServerName, port, Difficulty);
 
         RefreshServerList();
     }
@@ -46,10 +46,10 @@ public class ServerList : MonoBehaviour
     public void ServerSelected(Server_button button, List<Server_button> serverButtons)
     {
         button.isSelected = true;
-        foreach (Server_button item in serverButtons)
+        for (int i = 0; i < serverButtons.Count; i++)
         {
-            if (!item.Equals(button))
-                item.isSelected = false;
+            if (serverButtons[i].Equals(button))
+                SelectedIP = serverButtons[i].ip;
         }
     }
 

@@ -28,8 +28,6 @@ public class Server_button : MonoBehaviour
         SetFresh();
     }
 
-
-
     private int fresh
     {
         set
