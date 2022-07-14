@@ -28,6 +28,7 @@ public class ChessBoard : MonoBehaviour
     [SerializeField] private float yOffset = 0.2f;
     [SerializeField] private Vector3 boardCenter = Vector3.zero;
     [SerializeField] private float deadSize = 0.3f;
+    [SerializeField] private float aliveSize = 0.7f;
     [SerializeField] private float deadSpacing = 0.3f;
     [SerializeField] private float dragOffset = 1.3f;
     [SerializeField] private GameObject victoryScreen;
@@ -275,6 +276,7 @@ public class ChessBoard : MonoBehaviour
         cp.type = type;
         cp.team = team;
         cp.GetComponent<MeshRenderer>().material = teamMaterials[team];
+        cp.SetScale(Vector3.one * aliveSize);
 
         return cp;
     }

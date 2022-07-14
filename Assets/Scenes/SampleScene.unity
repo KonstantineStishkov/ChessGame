@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5072713, g: 0.3036986, b: 0.38379216, a: 1}
+  m_IndirectSpecularColor: {r: 0.50512385, g: 0.30490798, b: 0.38455334, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -480,7 +480,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &80983063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,7 +498,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -533,21 +533,21 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 2
+  m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
-  m_SensorSize: {x: 54.12, y: 25.59}
+  m_SensorSize: {x: 53.7, y: 25.59}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 20.78461
+  m_FocalLength: 20.084126
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 63.23288
+  near clip plane: 0.4
+  far clip plane: 996.43
+  field of view: 132.6
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -3100,6 +3100,7 @@ MonoBehaviour:
   yOffset: 0.03
   boardCenter: {x: 0.215, y: 0, z: 0.359}
   deadSize: 0.36
+  aliveSize: 0.7
   deadSpacing: 0.37
   dragOffset: 1.3
   victoryScreen: {fileID: 1407116125}
@@ -3494,11 +3495,11 @@ GameObject:
   - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: WideCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &963194226
 AudioListener:
   m_ObjectHideFlags: 0
@@ -3558,7 +3559,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: 0.88667506, z: -0.46239313, w: 0}
-  m_LocalPosition: {x: -1.96, y: 7.44, z: 5.73}
+  m_LocalPosition: {x: -1.86, y: 6.69, z: 4.98}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3582,7 +3583,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -4917,14 +4918,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1415920733}
-  m_LocalRotation: {x: 0.23831551, y: -0.2799493, z: 0.055974446, w: 0.9282785}
+  m_LocalRotation: {x: 0.010912798, y: -0.97741556, z: 0.20449792, w: 0.052158672}
   m_LocalPosition: {x: 1.87, y: 4.45, z: -3.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 28.28, y: -34.048, z: -1.921}
+  m_LocalEulerAnglesHint: {x: 23.634, y: -173.891, z: 0}
 --- !u!114 &1415920736
 MonoBehaviour:
   m_ObjectHideFlags: 0
