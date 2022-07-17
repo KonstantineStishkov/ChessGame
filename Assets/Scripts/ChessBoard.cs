@@ -23,7 +23,7 @@ public enum Difficulty
 public class ChessBoard : MonoBehaviour
 {
     [Header("Art Stuff")]
-    [SerializeField] private Material tileMaterial;
+    [SerializeField] private Material[] tileMaterial;
     [SerializeField] private float tileSize = 1.0f;
     [SerializeField] private float yOffset = 0.2f;
     [SerializeField] private Vector3 boardCenter = Vector3.zero;
@@ -31,7 +31,7 @@ public class ChessBoard : MonoBehaviour
     [SerializeField] private float aliveSize = 0.7f;
     [SerializeField] private float deadSpacing = 0.3f;
     [SerializeField] private float dragOffset = 1.3f;
-    [SerializeField] private GameObject victoryScreen;
+    [SerializeField] private GameObject ModalWindow;
     [SerializeField] private Logger gameLog;
 
     [Header("Prefabs & Materials")]
@@ -100,14 +100,23 @@ public class ChessBoard : MonoBehaviour
             if (currentHover == -Vector2Int.one)
             {
                 currentHover = hitPosition;
-                tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
+                SetMaterialToTile("Hover", tiles[hitPosition.x, hitPosition.y]);
+                //tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
             }
 
             if (currentHover != hitPosition)
             {
-                tiles[currentHover.x, currentHover.y].layer = (ContainsValidMove(ref availableMoves, currentHover)) ? LayerMask.NameToLayer("Highlight") : LayerMask.NameToLayer("Tile");
+                if (ContainsValidMove(ref availableMoves, currentHover))
+                    SetMaterialToTile("Highlight", tiles[currentHover.x, currentHover.y]);
+                else
+                    SetMaterialToTile("Tile", tiles[currentHover.x, currentHover.y]);
+
                 currentHover = hitPosition;
-                tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
+                SetMaterialToTile("Hover", tiles[hitPosition.x, hitPosition.y]);
+
+                //tiles[currentHover.x, currentHover.y].layer = (ContainsValidMove(ref availableMoves, currentHover)) ? LayerMask.NameToLayer("Highlight") : LayerMask.NameToLayer("Tile");
+                //currentHover = hitPosition;
+                //tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
             }
 
             // Pressing down mouse button
@@ -194,7 +203,7 @@ public class ChessBoard : MonoBehaviour
 
         Mesh mesh = new Mesh();
         tileObject.AddComponent<MeshFilter>().mesh = mesh;
-        tileObject.AddComponent<MeshRenderer>().material = tileMaterial;
+        tileObject.AddComponent<MeshRenderer>().material = tileMaterial[0];
 
         Vector3[] vertices = new Vector3[4];
 
@@ -286,11 +295,41 @@ public class ChessBoard : MonoBehaviour
     {
         for (int i = 0; i < availableMoves.Count; i++)
         {
-            tiles[availableMoves[i].x, availableMoves[i].y].layer = LayerMask.NameToLayer(mask);
+            SetMaterialToTile(mask, tiles[availableMoves[i].x, availableMoves[i].y]);
         }
 
         if (mask == "Tile")
             availableMoves.Clear();
+    }
+
+    private void SetMaterialToTile(string mask, GameObject tile)
+    {
+        Material material = GetMaterialByName(mask);
+
+        tile.GetComponent<MeshRenderer>().material = material;
+        tile.layer = LayerMask.NameToLayer(mask);
+    }
+
+    private Material GetMaterialByName(string mask)
+    {
+        Material material;
+        switch (mask)
+        {
+            case "Tile":
+                material = tileMaterial[0];
+                break;
+            case "Hover":
+                material = tileMaterial[1];
+                break;
+            case "Highlight":
+                material = tileMaterial[2];
+                break;
+            default:
+                material = tileMaterial[0];
+                break;
+        }
+
+        return material;
     }
 
     // Checkmate
@@ -302,8 +341,9 @@ public class ChessBoard : MonoBehaviour
 
     private void DisplayVictory(int winningTeam)
     {
-        victoryScreen.SetActive(true);
-        victoryScreen.transform.GetChild(winningTeam).gameObject.SetActive(true);
+        ModalWindow.SetActive(true);
+        //victoryScreen.SetActive(true);
+        //victoryScreen.transform.GetChild(winningTeam).gameObject.SetActive(true);
     }
 
     public void OnResetButton()
@@ -766,8 +806,8 @@ public class ChessBoard : MonoBehaviour
     }
     private void ClearUI()
     {
-        victoryScreen.SetActive(false);
-        victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
-        victoryScreen.transform.GetChild(1).gameObject.SetActive(false);
+        //victoryScreen.SetActive(false);
+        //victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
+        //victoryScreen.transform.GetChild(1).gameObject.SetActive(false);
     }
 }

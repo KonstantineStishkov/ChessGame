@@ -136,6 +136,7 @@ public class GameUI : MonoBehaviour
     public void OnBack()
     {
         server.Shutdown();
+        client.Shutdown();
         HideAllMenus();
         MainMenu.SetActive(true);
     }

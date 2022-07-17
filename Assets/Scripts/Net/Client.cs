@@ -80,6 +80,7 @@ public class Client : MonoBehaviour
             {
                 case NetworkEvent.Type.Connect:
                     //SendToServer(new NetWelcome());
+                    Debug.Log("We're connected");
                     break;
                 case NetworkEvent.Type.Data:
                     NetUtility.OnData(reader, default(NetworkConnection));
