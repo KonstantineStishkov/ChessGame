@@ -66,18 +66,13 @@ public class ChessBoard : MonoBehaviour
         GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
         SpawnAllPieces();
         PositionAllPieces();
+        RegisterEvents();
     }
     public void StartGame(Difficulty difficulty)
     {
         ai = difficulty;
         isWhiteTurn = true;
         isGameStarted = true;
-
-        GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
-        SpawnAllPieces();
-        PositionAllPieces();
-
-        RegisterEvents();
 
         Debug.Log("Chess Board Awakened");
         gameLog.AddLine("Game Started");

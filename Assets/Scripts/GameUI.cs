@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameUI : MonoBehaviour
 {
+    #region Properties
     [Header("Menus")]
     [SerializeField] GameObject MainMenu;
     [SerializeField] GameObject AuthenticationMenu;
@@ -45,7 +46,7 @@ public class GameUI : MonoBehaviour
         ChangeCamera(CameraAngle.menu);
         ProcessAuthentication();
     }
-
+    #endregion
     public void ChangeCamera(CameraAngle index)
     {
         for (int i = 0; i < cameraAngles.Length; i++)
@@ -53,7 +54,6 @@ public class GameUI : MonoBehaviour
 
         cameraAngles[(int)index].SetActive(true);
     }
-
     private void ProcessAuthentication()
     {
         HideAllMenus();
@@ -71,8 +71,7 @@ public class GameUI : MonoBehaviour
             TopBar.SetActive(true);
         }
     }
-
-    //Get Name Window
+    #region Get Name Window
     public void OnRegisterButton()
     {
         if(!dbAdapter.RegisterNewUser(window.Field1, window.Field2))
@@ -88,9 +87,13 @@ public class GameUI : MonoBehaviour
             window.CallWindow(WindowType.Info, "Wrong login or password", ProcessAuthentication);
             player = null;
         }
+        else
+        {
+            ProcessAuthentication();
+        }
     }
-
-    //Main menu Buttons
+    #endregion
+    #region Main menu Buttons
     public void OnLocalGameButton()
     {
         HideAllMenus();
@@ -110,8 +113,8 @@ public class GameUI : MonoBehaviour
         ConnectToSelf();
         DifficultyMenu.SetActive(true);
     }
-
-    //Difficulty Menu Buttons
+    #endregion
+    #region Difficulty Menu Buttons
     public void OnEasyGameButton()
     {
         Debug.Log("Easy Difficulty");
@@ -131,8 +134,8 @@ public class GameUI : MonoBehaviour
         Debug.Log("Hard Difficulty");
         HideAllMenus();
     }
-
-    //Online Game Buttons
+    #endregion
+    #region Online Game Buttons
     public void OnHostGame()
     {
         serverList.RegisterGameServer(port);
@@ -144,6 +147,11 @@ public class GameUI : MonoBehaviour
     {
         HideAllMenus();
         client.Init(serverList.SelectedIP, port);
+    }
+    public void OnJoinLocalGame()
+    {
+        HideAllMenus();
+        client.Init("127.0.0.1", port);
     }
 
     public void OnRefreshList()
@@ -158,8 +166,8 @@ public class GameUI : MonoBehaviour
         HideAllMenus();
         MainMenu.SetActive(true);
     }
-
-    //Top Bar
+    #endregion
+    #region Top Bar
     private void FillTopBar()
     {
         for(int i = 0; i < 5; i++)
@@ -170,8 +178,8 @@ public class GameUI : MonoBehaviour
 
         PlayerNameTMP.text = player.Name;
     }
-
-    //Common functions
+    #endregion
+    #region Common functions
     private void HideAllMenus()
     {
         MainMenu.SetActive(false);
@@ -183,7 +191,8 @@ public class GameUI : MonoBehaviour
 
     private void ConnectToSelf()
     {
-        server.Init(8007);
-        client.Init("127.0.0.1", 8007);
+        server.Init(port);
+        client.Init("127.0.0.1", port);
     }
+    #endregion
 }
