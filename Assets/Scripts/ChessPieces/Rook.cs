@@ -8,7 +8,7 @@ public class Rook : ChessPiece
     {
         value = 50;
     }
-    public int Value { get { return (team == 0) ? value : -value; } }
+    public new int Value { get { return (team == 0) ? value : -value; } }
     public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board, int tileCountX, int tileCountY)
     {
         List<Vector2Int> result = new List<Vector2Int>();

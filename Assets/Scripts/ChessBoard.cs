@@ -573,12 +573,6 @@ public class ChessBoard : MonoBehaviour
         }
     }
 
-    // Log Screen
-    private void AddToLog(int team, ChessPieceType type, Vector2Int startPosition, Vector2Int finishPosition)
-    {
-
-    }
-
     // AI
     private void EnemyTurn(Difficulty difficulty)
     {

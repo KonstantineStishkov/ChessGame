@@ -11,6 +11,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject DifficultyMenu;
     [SerializeField] GameObject OnlineMenu;
     [SerializeField] GameObject Log;
+    [SerializeField] GameObject ModalWindowObject;
 
     [Header("Top Bar")]
     [SerializeField] GameObject TopBar;
@@ -19,14 +20,15 @@ public class GameUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI PlayerNameTMP;
 
 
-    [Header("Input Fields")]
-    [SerializeField] TMP_InputField Login;
-    [SerializeField] TMP_InputField Password;
+    //[Header("Input Fields")]
+    //[SerializeField] TMP_InputField Login;
+    //[SerializeField] TMP_InputField Password;
 
     [Header("Functional objects")]
     [SerializeField] ServerList serverList;
     [SerializeField] Server server;
     [SerializeField] Client client;
+    [SerializeField] ModalWindow window;
 
     [Header("Chess Board")]
     [SerializeField] ChessBoard chessBoard;
@@ -42,15 +44,22 @@ public class GameUI : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        ProcessAuthentication();
+    }
+
+    private void ProcessAuthentication()
+    {
         HideAllMenus();
 
-        if(player == null)
+        if (player == null)
         {
-            AuthenticationMenu.SetActive(true);
+            window.CallWindow(WindowType.DoubleInput, "Please Input Login and Password to Login", OnLoginButton, OnRegisterButton, "Login", "Register");
             dbAdapter = new MySqlAdapter();
         }
         else
         {
+            ModalWindowObject.SetActive(false);
+            FillTopBar();
             MainMenu.SetActive(true);
             TopBar.SetActive(true);
         }
@@ -59,16 +68,18 @@ public class GameUI : MonoBehaviour
     //Get Name Window
     public void OnRegisterButton()
     {
-        dbAdapter.RegisterNewUser(Login.text, Password.text);
+        if(!dbAdapter.RegisterNewUser(window.Field1, window.Field2))
+        {
+            window.CallWindow(WindowType.Info, "User name has already taken", ProcessAuthentication);
+            player = null;
+        }
     }
     public void OnLoginButton()
     {
-        if (dbAdapter.Login(Login.text, Password.text, out player))
+        if (!dbAdapter.Login(window.Field1, window.Field2, out player))
         {
-            HideAllMenus();
-            MainMenu.SetActive(true);
-            FillTopBar();
-            TopBar.SetActive(true);
+            window.CallWindow(WindowType.Info, "Wrong login or password", ProcessAuthentication);
+            player = null;
         }
     }
 
@@ -82,7 +93,7 @@ public class GameUI : MonoBehaviour
     public void OnOnlineGameButton()
     {
         HideAllMenus();
-        serverList.Initialize(dbAdapter, Login.text, player.Level);
+        serverList.Initialize(dbAdapter, player.Name, player.Level);
         OnlineMenu.SetActive(true);
     }
 
