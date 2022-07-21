@@ -8,7 +8,6 @@ public class GameUI : MonoBehaviour
     #region Properties
     [Header("Menus")]
     [SerializeField] GameObject MainMenu;
-    [SerializeField] GameObject AuthenticationMenu;
     [SerializeField] GameObject DifficultyMenu;
     [SerializeField] GameObject OnlineMenu;
     [SerializeField] GameObject Log;
@@ -110,7 +109,6 @@ public class GameUI : MonoBehaviour
     public void OnAgainstAIButton()
     {
         HideAllMenus();
-        ConnectToSelf();
         DifficultyMenu.SetActive(true);
     }
     #endregion
@@ -119,6 +117,7 @@ public class GameUI : MonoBehaviour
     {
         Debug.Log("Easy Difficulty");
         HideAllMenus();
+        ChangeCamera(CameraAngle.blackTeam);
         Log.SetActive(true);
         chessBoard.StartGame(Difficulty.Easy);
     }
@@ -183,7 +182,6 @@ public class GameUI : MonoBehaviour
     private void HideAllMenus()
     {
         MainMenu.SetActive(false);
-        AuthenticationMenu.SetActive(false);
         DifficultyMenu.SetActive(false);
         OnlineMenu.SetActive(false);
         Log.SetActive(false);

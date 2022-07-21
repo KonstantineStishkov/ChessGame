@@ -141,15 +141,24 @@ public class MySqlAdapter : IDbAdapter
     private string SendRequest(string address, NameValueCollection sendingData = null)
     {
         byte[] responseBytes;
-        using (WebClient client = new WebClient())
-        {
-            if (sendingData == null)
-                responseBytes = client.DownloadData(address);
-            else
-                responseBytes = client.UploadValues(address, "POST", sendingData);
-        }
+        string result = string.Empty;
 
-        string result = Encoding.UTF8.GetString(responseBytes);
+        try
+        {
+            using (WebClient client = new WebClient())
+            {
+                if (sendingData == null)
+                    responseBytes = client.DownloadData(address);
+                else
+                    responseBytes = client.UploadValues(address, "POST", sendingData);
+            }
+
+            result = Encoding.UTF8.GetString(responseBytes);
+        }
+        catch(Exception ex)
+        {
+            Debug.LogError(ex.Message);
+        }
 
         return result;
     }
