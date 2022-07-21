@@ -79,7 +79,7 @@ public class Client : MonoBehaviour
             switch (cmd)
             {
                 case NetworkEvent.Type.Connect:
-                    //SendToServer(new NetWelcome());
+                    SendToServer(new NetWelcome());
                     Debug.Log("We're connected");
                     break;
                 case NetworkEvent.Type.Data:

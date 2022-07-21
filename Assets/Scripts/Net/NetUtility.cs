@@ -17,12 +17,12 @@ public static class NetUtility
             case OpCode.KEEP_ALIVE: 
                 msg = new NetKeepAlive(reader); 
                 break;
-            //case OpCode.WELCOME: 
-            //    msg = new NetWelcome(reader); 
-            //    break;
-            //case OpCode.START_GAME: 
-            //    msg = new NetStartGame(reader); 
-            //    break;
+            case OpCode.WELCOME:
+                msg = new NetWelcome(reader);
+                break;
+            case OpCode.START_GAME:
+                msg = new NetStartGame(reader);
+                break;
             //case OpCode.MAKE_MOVE: 
             //    msg = new NetMakeMove(reader); 
             //    break;

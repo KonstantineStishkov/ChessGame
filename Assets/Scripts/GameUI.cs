@@ -19,10 +19,8 @@ public class GameUI : MonoBehaviour
     [SerializeField] Sprite[] StarIcons;
     [SerializeField] TextMeshProUGUI PlayerNameTMP;
 
-
-    //[Header("Input Fields")]
-    //[SerializeField] TMP_InputField Login;
-    //[SerializeField] TMP_InputField Password;
+    [Header("Camera Options")]
+    [SerializeField] GameObject[] cameraAngles;
 
     [Header("Functional objects")]
     [SerializeField] ServerList serverList;
@@ -44,7 +42,16 @@ public class GameUI : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        ChangeCamera(CameraAngle.menu);
         ProcessAuthentication();
+    }
+
+    public void ChangeCamera(CameraAngle index)
+    {
+        for (int i = 0; i < cameraAngles.Length; i++)
+            cameraAngles[i].SetActive(false);
+
+        cameraAngles[(int)index].SetActive(true);
     }
 
     private void ProcessAuthentication()

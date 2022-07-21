@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Networking.Transport;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -56,6 +57,16 @@ public class ChessBoard : MonoBehaviour
     private SpecialMove specialMove;
     private List<Vector2Int[]> moveList = new List<Vector2Int[]>();
 
+    //Multi-player logic
+    private int playerCount = -1;
+    private int currentTeam = -1;
+
+    public void Awake()
+    {
+        GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
+        SpawnAllPieces();
+        PositionAllPieces();
+    }
     public void StartGame(Difficulty difficulty)
     {
         ai = difficulty;
@@ -65,6 +76,8 @@ public class ChessBoard : MonoBehaviour
         GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
         SpawnAllPieces();
         PositionAllPieces();
+
+        RegisterEvents();
 
         Debug.Log("Chess Board Awakened");
         gameLog.AddLine("Game Started");
@@ -804,4 +817,41 @@ public class ChessBoard : MonoBehaviour
         //victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
         //victoryScreen.transform.GetChild(1).gameObject.SetActive(false);
     }
+
+    #region
+    private void RegisterEvents()
+    {
+        NetUtility.S_WELCOME += OnWelcomeServer;
+
+        NetUtility.C_WELCOME += OnWelcomeClient;
+        NetUtility.C_START_GAME += OnStartGameClient;
+    }
+    private void UnRegisterEvents()
+    {
+
+    }
+    //Server
+    private void OnWelcomeServer(NetMessage message, NetworkConnection connection)
+    {
+        NetWelcome welcome = message as NetWelcome;
+        welcome.AssignedTeam = ++playerCount;
+        Server.Instance.SendToClient(connection, message);
+
+        if(playerCount == 1)
+        {
+            Server.Instance.Broadcast(new NetStartGame());
+        }
+    }
+    //Client
+    private void OnWelcomeClient(NetMessage message)
+    {
+        NetWelcome welcome = message as NetWelcome;
+        currentTeam = welcome.AssignedTeam;
+        Debug.Log($"My assigned team is {welcome.AssignedTeam}");
+    }
+    private void OnStartGameClient(NetMessage message)
+    {
+        GameUI.Instance.ChangeCamera((currentTeam == 0) ? CameraAngle.whiteTeam : CameraAngle.blackTeam);
+    }
+    #endregion
 }
