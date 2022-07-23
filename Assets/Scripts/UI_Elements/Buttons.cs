@@ -21,6 +21,6 @@ public class Buttons : MonoBehaviour
 
         Button btn = obj.GetComponent<Button>();
         btn.onClick.AddListener(action);
-        btn.targetGraphic = obj.AddComponent<Image>();
+        btn.targetGraphic = obj.GetComponent<Image>();
     }
 }

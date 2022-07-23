@@ -11,6 +11,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject MainMenu;
     [SerializeField] GameObject DifficultyMenu;
     [SerializeField] GameObject OnlineMenu;
+    [SerializeField] GameObject OnlineMenuButtons;
     [SerializeField] GameObject Log;
     [SerializeField] GameObject ModalWindowObject;
 
@@ -45,6 +46,7 @@ public class GameUI : MonoBehaviour
     {
         Instance = this;
         ChangeCamera(CameraAngle.menu);
+        MakeButtons();
         ProcessAuthentication();
     }
     #endregion
@@ -69,13 +71,28 @@ public class GameUI : MonoBehaviour
             ModalWindowObject.SetActive(false);
             FillTopBar();
             MainMenu.SetActive(true);
-            Button btn = MainMenu.AddComponent<Button>();
-            buttons.SetButton(MainMenu, "Play Local", OnLocalGameButton);
-            buttons.SetButton(MainMenu, "Play Online", OnOnlineGameButton);
-            buttons.SetButton(MainMenu, "Play Against AI", OnAgainstAIButton);
 
             TopBar.SetActive(true);
         }
+    }
+    private void MakeButtons()
+    {
+        buttons.SetButton(MainMenu, "Play Local", OnLocalGameButton);
+        buttons.SetButton(MainMenu, "Play Online", OnOnlineGameButton);
+        buttons.SetButton(MainMenu, "Play Against AI", OnAgainstAIButton);
+        buttons.SetButton(MainMenu, "Settings", OnSettingsButton);
+        buttons.SetButton(MainMenu, "Credits", OnCreditsButton);
+        buttons.SetButton(MainMenu, "Exit", OnExitButton);
+
+        buttons.SetButton(OnlineMenuButtons, "Host Game", OnHostGame);
+        buttons.SetButton(OnlineMenuButtons, "Join Game", OnJoinGame);
+        buttons.SetButton(OnlineMenuButtons, "Join Directly", OnJoinDirectly);
+        buttons.SetButton(OnlineMenuButtons, "Refresh List", OnRefreshList);
+        buttons.SetButton(OnlineMenuButtons, "Back", OnBack);
+
+        buttons.SetButton(DifficultyMenu, "Easy", OnEasyGameButton);
+        buttons.SetButton(DifficultyMenu, "Medium", OnMediumGameButton);
+        buttons.SetButton(DifficultyMenu, "Hard", OnHardGameButton);
     }
     #region Get Name Window
     public void OnRegisterButton()
@@ -118,6 +135,18 @@ public class GameUI : MonoBehaviour
         HideAllMenus();
         DifficultyMenu.SetActive(true);
     }
+    public void OnSettingsButton()
+    {
+
+    }
+    public void OnCreditsButton()
+    {
+
+    }
+    public void OnExitButton()
+    {
+
+    }
     #endregion
     #region Difficulty Menu Buttons
     public void OnEasyGameButton()
@@ -129,7 +158,7 @@ public class GameUI : MonoBehaviour
         chessBoard.StartGame(Difficulty.Easy);
     }
 
-    public void OnNormalGameButton()
+    public void OnMediumGameButton()
     {
         Debug.Log("Normal Difficulty");
         HideAllMenus();
@@ -154,7 +183,7 @@ public class GameUI : MonoBehaviour
         HideAllMenus();
         client.Init(serverList.SelectedIP, port);
     }
-    public void OnJoinLocalGame()
+    public void OnJoinDirectly()
     {
         HideAllMenus();
         client.Init("127.0.0.1", port);
