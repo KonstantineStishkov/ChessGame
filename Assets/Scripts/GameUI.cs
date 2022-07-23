@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] ServerList serverList;
     [SerializeField] Server server;
     [SerializeField] Client client;
+    [SerializeField] Buttons buttons;
     [SerializeField] ModalWindow window;
 
     [Header("Chess Board")]
@@ -67,6 +69,11 @@ public class GameUI : MonoBehaviour
             ModalWindowObject.SetActive(false);
             FillTopBar();
             MainMenu.SetActive(true);
+            Button btn = MainMenu.AddComponent<Button>();
+            buttons.SetButton(MainMenu, "Play Local", OnLocalGameButton);
+            buttons.SetButton(MainMenu, "Play Online", OnOnlineGameButton);
+            buttons.SetButton(MainMenu, "Play Against AI", OnAgainstAIButton);
+
             TopBar.SetActive(true);
         }
     }
