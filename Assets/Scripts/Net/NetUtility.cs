@@ -23,9 +23,9 @@ public static class NetUtility
             case OpCode.START_GAME:
                 msg = new NetStartGame(reader);
                 break;
-            //case OpCode.MAKE_MOVE: 
-            //    msg = new NetMakeMove(reader); 
-            //    break;
+            case OpCode.MAKE_MOVE:
+                msg = new NetMakeMove(reader);
+                break;
             //case OpCode.REMATCH: 
             //    msg = new NetRematch(reader); 
             //    break;
