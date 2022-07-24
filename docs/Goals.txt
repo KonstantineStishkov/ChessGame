@@ -4,7 +4,7 @@
 - Refactoring
 
 2. Gameplay
-- HotSeat Gameplay polishing
+- HotSeat Gameplay polishing			-completed
 
 3. Online Game:
 - Authentication  	-completed
@@ -20,6 +20,7 @@
 
 6. UI
 - UI images polishing
+- Wide and high screens    				-completed
 - Calibrate screen turning and UI composition
 
 7. Modding
