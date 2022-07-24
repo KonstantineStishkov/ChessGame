@@ -13,6 +13,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject OnlineMenu;
     [SerializeField] GameObject OnlineMenuButtons;
     [SerializeField] GameObject Log;
+    [SerializeField] GameObject Logo;
     [SerializeField] GameObject ModalWindowObject;
 
     [Header("Top Bar")]
@@ -72,6 +73,7 @@ public class GameUI : MonoBehaviour
             ModalWindowObject.SetActive(false);
             FillTopBar();
             MainMenu.SetActive(true);
+            Logo.SetActive(true);
 
             TopBar.SetActive(true);
         }
@@ -203,6 +205,7 @@ public class GameUI : MonoBehaviour
         client.Shutdown();
         HideAllMenus();
         MainMenu.SetActive(true);
+        Logo.SetActive(true);
     }
     #endregion
     #region Top Bar
@@ -224,6 +227,7 @@ public class GameUI : MonoBehaviour
         DifficultyMenu.SetActive(false);
         OnlineMenu.SetActive(false);
         Log.SetActive(false);
+        Logo.SetActive(false);
     }
 
     private void ConnectToSelf()
