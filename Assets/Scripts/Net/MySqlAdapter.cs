@@ -121,7 +121,7 @@ public class MySqlAdapter : IDbAdapter
     private NameValueCollection ComposeServerData(string serverName, ushort port, int difficulty)
     {
         NameValueCollection data = new NameValueCollection();
-        data.Add("ip", GetMyIP());
+        data.Add("ip", GetMyIP().Trim());
         data.Add("port", port.ToString());
         data.Add("serverName", serverName);
         data.Add("difficulty", difficulty.ToString());

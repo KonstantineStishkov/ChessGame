@@ -23,6 +23,7 @@ public enum Difficulty
 
 public class ChessBoard : MonoBehaviour
 {
+    #region Properties
     [Header("Art Stuff")]
     [SerializeField] private Material[] tileMaterial;
     [SerializeField] private float tileSize = 1.0f;
@@ -33,7 +34,9 @@ public class ChessBoard : MonoBehaviour
     [SerializeField] private float deadSpacing = 0.3f;
     [SerializeField] private float dragOffset = 1.3f;
     [SerializeField] private GameObject ModalWindow;
-    [SerializeField] private Logger gameLog;
+    //[SerializeField] private GameObject Log;
+    //[SerializeField] private Logger gameLog;
+    [SerializeField] private StatusBar StatusBar;
 
     [Header("Prefabs & Materials")]
     [SerializeField] private GameObject[] prefabs;
@@ -60,6 +63,8 @@ public class ChessBoard : MonoBehaviour
     //Multi-player logic
     private int playerCount = -1;
     private int currentTeam = -1;
+    private bool isHotSeat = true;
+    #endregion
 
     public void Awake()
     {
@@ -70,12 +75,13 @@ public class ChessBoard : MonoBehaviour
     }
     public void StartGame(Difficulty difficulty)
     {
+        ModalWindow.SetActive(false);
         ai = difficulty;
         isWhiteTurn = true;
         isGameStarted = true;
 
         Debug.Log("Chess Board Awakened");
-        gameLog.AddLine("Game Started");
+        Logger.Instance.AddLine("Game Started");
     }
     private void Update()
     {
@@ -109,7 +115,6 @@ public class ChessBoard : MonoBehaviour
             {
                 currentHover = hitPosition;
                 SetMaterialToTile("Hover", tiles[hitPosition.x, hitPosition.y]);
-                //tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
             }
 
             if (currentHover != hitPosition)
@@ -121,10 +126,6 @@ public class ChessBoard : MonoBehaviour
 
                 currentHover = hitPosition;
                 SetMaterialToTile("Hover", tiles[hitPosition.x, hitPosition.y]);
-
-                //tiles[currentHover.x, currentHover.y].layer = (ContainsValidMove(ref availableMoves, currentHover)) ? LayerMask.NameToLayer("Highlight") : LayerMask.NameToLayer("Tile");
-                //currentHover = hitPosition;
-                //tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
             }
 
             // Pressing down mouse button
@@ -132,8 +133,8 @@ public class ChessBoard : MonoBehaviour
             {
                 if (chessPieces[hitPosition.x, hitPosition.y] != null)
                 {
-                    if ((chessPieces[hitPosition.x, hitPosition.y].team == 0 && isWhiteTurn && ai == Difficulty.None)
-                     || (chessPieces[hitPosition.x, hitPosition.y].team == 1 && !isWhiteTurn)) //is it my turn?
+                    if ((chessPieces[hitPosition.x, hitPosition.y].team == 0 && isWhiteTurn && currentTeam == 0 && ai == Difficulty.None)
+                     || (chessPieces[hitPosition.x, hitPosition.y].team == 1 && !isWhiteTurn && currentTeam == 1)) //is it my turn?
                     {
                         currentlyDragging = chessPieces[hitPosition.x, hitPosition.y];
 
@@ -188,7 +189,7 @@ public class ChessBoard : MonoBehaviour
         }
     }
 
-    //Generate the board
+    #region Generation
     private void GenerateAllTiles(float tileSize, int tileCountX, int tileCountY)
     {
         yOffset += transform.position.y;
@@ -231,8 +232,8 @@ public class ChessBoard : MonoBehaviour
 
         return tileObject;
     }
-
-    //Positioning
+    #endregion
+    #region Positioning
     private void PositionAllPieces()
     {
         for (int x = 0; x < TILE_COUNT_X; x++)
@@ -250,8 +251,8 @@ public class ChessBoard : MonoBehaviour
     {
         return new Vector3(x * tileSize, yOffset, y * tileSize) - bounds + new Vector3(tileSize / 2, 0, tileSize / 2);
     }
-
-    //Spawning the pieces
+    #endregion
+    #region Spawning pieces
     private void SpawnAllPieces()
     {
         chessPieces = new ChessPiece[TILE_COUNT_X, TILE_COUNT_Y];
@@ -297,8 +298,8 @@ public class ChessBoard : MonoBehaviour
 
         return cp;
     }
-
-    //Highlight Tiles
+    #endregion
+    #region Highlight Tile
     private void HighlightTiles(string mask = "Tile")
     {
         for (int i = 0; i < availableMoves.Count; i++)
@@ -339,8 +340,8 @@ public class ChessBoard : MonoBehaviour
 
         return material;
     }
-
-    // Checkmate
+    #endregion
+    #region Checkmate
     private void CheckMate(int team)
     {
         ai = Difficulty.None;
@@ -350,10 +351,7 @@ public class ChessBoard : MonoBehaviour
     private void DisplayVictory(int winningTeam)
     {
         ModalWindow.SetActive(true);
-        //victoryScreen.SetActive(true);
-        //victoryScreen.transform.GetChild(winningTeam).gameObject.SetActive(true);
     }
-
     public void OnResetButton()
     {
         ClearUI();
@@ -368,8 +366,8 @@ public class ChessBoard : MonoBehaviour
     {
         Application.Quit();
     }
-
-    // Special Moves
+    #endregion
+    #region Special Moves
     private void ProcessSpecialMove()
     {
         if (specialMove == SpecialMove.EnPassant)
@@ -580,8 +578,8 @@ public class ChessBoard : MonoBehaviour
             }
         }
     }
-
-    // AI
+    #endregion
+    #region AI
     private void EnemyTurn(Difficulty difficulty)
     {
         Vector2Int targetPosition;
@@ -681,8 +679,8 @@ public class ChessBoard : MonoBehaviour
         targetPosition = new Vector2Int();
         return new ChessPiece();
     }
-
-    //Operations
+    #endregion
+    #region Operations
     private Vector2Int LookupTileIndex(GameObject hitinfo)
     {
         for (int x = 0; x < TILE_COUNT_X; x++)
@@ -730,9 +728,15 @@ public class ChessBoard : MonoBehaviour
         chessPieces[previousPosition.x, previousPosition.y] = null;
 
         PositionSinglePiece(x, y);
-        gameLog.LogTurn(cp.team, cp.type, new Vector2Int(previousPosition.x, previousPosition.y), new Vector2Int(x, y));
+        Logger.Instance.LogTurn(cp.team, cp.type, new Vector2Int(previousPosition.x, previousPosition.y), new Vector2Int(x, y));
 
         isWhiteTurn = !isWhiteTurn;
+        if (isHotSeat)
+        {
+            currentTeam = currentTeam == 0 ? 1 : 0;
+            GameUI.Instance.ChangeCamera((currentTeam == 0) ? CameraAngle.whiteTeam : CameraAngle.blackTeam);
+        }
+
         moveList.Add(new Vector2Int[] { previousPosition, new Vector2Int(x, y) });
 
         ProcessSpecialMove();
@@ -812,18 +816,25 @@ public class ChessBoard : MonoBehaviour
         //victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
         //victoryScreen.transform.GetChild(1).gameObject.SetActive(false);
     }
-
-    #region
+    #endregion
+    #region Events
     private void RegisterEvents()
     {
         NetUtility.S_WELCOME += OnWelcomeServer;
 
         NetUtility.C_WELCOME += OnWelcomeClient;
         NetUtility.C_START_GAME += OnStartGameClient;
+
+        GameUI.Instance.SetLocalGame += OnSetLocalGame;
     }
     private void UnRegisterEvents()
     {
+        NetUtility.S_WELCOME -= OnWelcomeServer;
 
+        NetUtility.C_WELCOME -= OnWelcomeClient;
+        NetUtility.C_START_GAME -= OnStartGameClient;
+
+        GameUI.Instance.SetLocalGame -= OnSetLocalGame;
     }
     //Server
     private void OnWelcomeServer(NetMessage message, NetworkConnection connection)
@@ -832,9 +843,10 @@ public class ChessBoard : MonoBehaviour
         welcome.AssignedTeam = ++playerCount;
         Server.Instance.SendToClient(connection, message);
 
-        if(playerCount == 1)
+        if(playerCount > 0)
         {
             Server.Instance.Broadcast(new NetStartGame());
+            StatusBar.ShowMessage(MessageType.Info, "Connection Successful. Game is about to start");
         }
     }
     //Client
@@ -842,11 +854,19 @@ public class ChessBoard : MonoBehaviour
     {
         NetWelcome welcome = message as NetWelcome;
         currentTeam = welcome.AssignedTeam;
-        Debug.Log($"My assigned team is {welcome.AssignedTeam}");
+        StatusBar.ShowMessage(MessageType.Info, $"My assigned team is {welcome.AssignedTeam}");
+
+        if (isHotSeat && currentTeam == 0)
+            Server.Instance.Broadcast(new NetStartGame());
     }
     private void OnStartGameClient(NetMessage message)
     {
         GameUI.Instance.ChangeCamera((currentTeam == 0) ? CameraAngle.whiteTeam : CameraAngle.blackTeam);
+        StartGame(Difficulty.None);
+    }
+    private void OnSetLocalGame(bool v)
+    {
+        isHotSeat = v;
     }
     #endregion
 }

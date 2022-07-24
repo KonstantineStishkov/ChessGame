@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -41,6 +42,8 @@ public class GameUI : MonoBehaviour
 
     private IDbAdapter dbAdapter;
     private Player player;
+
+    public Action<bool> SetLocalGame;
 
     public static GameUI Instance { get; set; }
 
@@ -124,12 +127,15 @@ public class GameUI : MonoBehaviour
     #region Main menu Buttons
     public void OnLocalGameButton()
     {
+        SetLocalGame?.Invoke(true);
         HideAllMenus();
+        Log.SetActive(true);
         ConnectToSelf();
     }
 
     public void OnOnlineGameButton()
     {
+        SetLocalGame?.Invoke(false);
         HideAllMenus();
         serverList.Initialize(dbAdapter, player.Name, player.Level);
         OnlineMenu.SetActive(true);
@@ -180,7 +186,15 @@ public class GameUI : MonoBehaviour
     {
         serverList.RegisterGameServer(port);
         serverList.RefreshServerList();
+        StatusBar.ShowMessage(MessageType.Info, "Waiting for connection...");
         ConnectToSelf();
+        HideAllMenus();
+        window.CallWindow(WindowType.Info, "Waiting for connection...", OnStopHost);
+    }
+
+    public void OnStopHost()
+    {
+
     }
 
     public void OnJoinGame()

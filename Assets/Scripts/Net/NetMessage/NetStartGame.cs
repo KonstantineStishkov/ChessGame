@@ -9,7 +9,7 @@ public class NetStartGame : NetMessage
     public int AssignedTeam { get; set; }
     public NetStartGame()
     {
-        Code = OpCode.WELCOME;
+        Code = OpCode.START_GAME;
     }
     public NetStartGame(DataStreamReader reader)
     {

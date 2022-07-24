@@ -22,10 +22,11 @@ public class Logger : MonoBehaviour
     [Header("Log")]
     [SerializeField] TextMeshProUGUI textMesh;
 
+    public static Logger Instance;
     private StringBuilder stb;
     private void Awake()
     {
-        //textMesh = log.GetComponent("LogText") as TextMeshPro;
+        Instance = this;
         stb = new StringBuilder();
     }
 
