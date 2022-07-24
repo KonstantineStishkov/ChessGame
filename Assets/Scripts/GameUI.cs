@@ -17,6 +17,7 @@ public class GameUI : MonoBehaviour
 
     [Header("Top Bar")]
     [SerializeField] GameObject TopBar;
+    [SerializeField] StatusBar StatusBar;
     [SerializeField] GameObject[] StarObjects;
     [SerializeField] Sprite[] StarIcons;
     [SerializeField] TextMeshProUGUI PlayerNameTMP;
@@ -107,12 +108,14 @@ public class GameUI : MonoBehaviour
     {
         if (!dbAdapter.Login(window.Field1, window.Field2, out player))
         {
+            StatusBar.ShowMessage(MessageType.Warning, "Wrong login or password");
             window.CallWindow(WindowType.Info, "Wrong login or password", ProcessAuthentication);
             player = null;
         }
         else
         {
             ProcessAuthentication();
+            StatusBar.ShowMessage(MessageType.Info, "Successfully logged in");
         }
     }
     #endregion
