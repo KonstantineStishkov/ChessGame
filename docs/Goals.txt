@@ -27,3 +27,6 @@
 - External model uploading
 - External texture maps uploading
 - External GUI elements uploading
+
+8. Bugs
+- Sometimes freeze on Check
