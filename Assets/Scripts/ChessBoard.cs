@@ -408,8 +408,7 @@ public class ChessBoard : MonoBehaviour
         GameReset();
         GameUI.Instance.OnLeaveFromGame();
 
-        Client.Instance.Shutdown();
-        Server.Instance.Shutdown();
+        Invoke("ShutdownRelay", 1.0f);
 
         playerCount = -1;
         currentTeam = -1;
@@ -951,13 +950,31 @@ public class ChessBoard : MonoBehaviour
         string indicatorMessage = rematch.isWantRematch ? "Your opponent want to rematch" : "Your opponent do not want to rematch";
 
         if (rematch.teamId != currentTeam)
+        {
             GameUI.Instance.window.SetIndicator(indicatorMessage);
+            if (!rematch.isWantRematch)
+                GameUI.Instance.window.DisableButton(1);
+        }
+
 
         if (playerRematch[0] && playerRematch[1])
             GameReset();
     }
+    private void ShutdownRelay()
+    {
+        Client.Instance.Shutdown();
+        Server.Instance.Shutdown();
+    }
+    public void StopHost()
+    {
+        playerCount = -1;
+        currentTeam = -1;
+    }
     private void OnSetLocalGame(bool v)
     {
+        playerCount = -1;
+        currentTeam = -1;
+
         isHotSeat = v;
     }
     #endregion

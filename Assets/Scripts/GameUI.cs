@@ -223,7 +223,7 @@ public class GameUI : MonoBehaviour
 
     public void OnStopHost()
     {
-
+        chessBoard.StopHost();
     }
 
     public void OnJoinGame()

@@ -87,9 +87,17 @@ public class ModalWindow : MonoBehaviour
         indicator.text = indicatorMessage;
         indicator.gameObject.SetActive(true);
     }
+    public void DisableButton(int buttonNum)
+    {
+        if (buttonNum == 1)
+            Button1.GetComponent<Button>().interactable = false;
+        else
+            Button2.GetComponent<Button>().interactable = false;
+    }
     private void ActivateButton(GameObject button, UnityAction action, string actionMessage)
     {
         button.SetActive(true);
+        button.GetComponent<Button>().interactable = true;
         button.GetComponentInChildren<Text>().text = actionMessage;
         button.GetComponent<Button>().onClick.AddListener(action);
     }
