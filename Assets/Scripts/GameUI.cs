@@ -60,6 +60,7 @@ public class GameUI : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        dbAdapter = new MySqlAdapter();
         buttons.Awake();
         ChangeCamera(CameraAngle.menu);
         MakeButtons();
@@ -91,7 +92,6 @@ public class GameUI : MonoBehaviour
         if (player == null)
         {
             window.CallWindow(loginMessage, OnLoginButton, loginLabel, OnRegisterButton, registerLabel, mailLabel, passwordLabel);
-            dbAdapter = new MySqlAdapter();
         }
         else
         {

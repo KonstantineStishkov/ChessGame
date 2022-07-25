@@ -358,12 +358,12 @@ public class ChessBoard : MonoBehaviour
     private void CheckMate(int team)
     {
         ai = Difficulty.None;
+        isGameStarted = false;
         DisplayVictory(team);
     }
 
     private void DisplayVictory(int winningTeam)
     {
-        isGameStarted = false;
         GameUI.Instance.DisplayVictory(winningTeam);
         ModalWindow.SetActive(true);
     }

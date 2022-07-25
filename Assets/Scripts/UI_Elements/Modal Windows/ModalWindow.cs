@@ -15,9 +15,7 @@ public class ModalWindow : MonoBehaviour
     [Header("Text Fields")]
     [SerializeField] protected TextMeshProUGUI info;
     [SerializeField] protected TextMeshProUGUI label1;
-    [SerializeField] protected TextMeshProUGUI input1;
     [SerializeField] protected TextMeshProUGUI label2;
-    [SerializeField] protected TMP_InputField input2;
 
     [Header("Components")]
     [SerializeField] protected GameObject Input1;
@@ -63,14 +61,15 @@ public class ModalWindow : MonoBehaviour
         MainWindow.SetActive(true);
         CheckButtons(2);
 
-        ActivateAll();
         info.text = message;
 
         ActivateButton(Button1, action1, actionMessage1);
         ActivateButton(Button2, action2, actionMessage2);
 
         label1.text = inputLabel1;
+        Input1.GetComponentInChildren<TMP_InputField>().onValueChanged.AddListener((value) => { Field1 = value; });
         label2.text = inputLabel2;
+        Input2.GetComponentInChildren<TMP_InputField>().onValueChanged.AddListener((value) => { Field2 = value; });
     }
     private void ActivateButton(GameObject button, UnityAction action, string actionMessage)
     {
@@ -92,13 +91,8 @@ public class ModalWindow : MonoBehaviour
         MainWindow.SetActive(false);
         Button1.GetComponent<Button>().onClick.RemoveAllListeners();
         Button2.GetComponent<Button>().onClick.RemoveAllListeners();
-    }
-    protected void ActivateAll()
-    {
-        Input1.SetActive(true);
-        Input2.SetActive(true);
-        Button1.SetActive(true);
-        Button2.SetActive(true);
+        Input1.GetComponentInChildren<InputField>().onValueChanged.RemoveAllListeners();
+        Input2.GetComponentInChildren<InputField>().onValueChanged.RemoveAllListeners();
     }
 
     protected void DeactivateAll()
