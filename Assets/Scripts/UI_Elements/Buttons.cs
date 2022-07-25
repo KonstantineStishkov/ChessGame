@@ -10,7 +10,12 @@ public class Buttons : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] GameObject prefab;
 
-    public void SetButton(GameObject parent, string label, UnityAction action)
+    public static Buttons Instance;
+    public void Awake()
+    {
+        Instance = this;
+    }
+    public GameObject SetButton(GameObject parent, string label, UnityAction action = null)
     {
         GameObject obj = Instantiate(prefab, parent.transform);
         obj.name = label;
@@ -20,7 +25,12 @@ public class Buttons : MonoBehaviour
         textComponent.text = label;
 
         Button btn = obj.GetComponent<Button>();
-        btn.onClick.AddListener(action);
+
+        if (action != null)
+            btn.onClick.AddListener(action);
+
         btn.targetGraphic = obj.GetComponent<Image>();
+
+        return obj;
     }
 }

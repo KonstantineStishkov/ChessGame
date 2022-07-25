@@ -18,24 +18,30 @@ public class ModalWindow : MonoBehaviour
     [SerializeField] TextMeshProUGUI input1;
     [SerializeField] TextMeshProUGUI label2;
     [SerializeField] TMP_InputField input2;
-    [SerializeField] TextMeshProUGUI buttonLabel1;
-    [SerializeField] TextMeshProUGUI buttonLabel2;
 
     [Header("Components")]
     [SerializeField] GameObject Input1;
     [SerializeField] GameObject Input2;
-    [SerializeField] GameObject Button1;
-    [SerializeField] GameObject Button2;
+    [SerializeField] GameObject ButtonParent;
 
     public string Field1 { get; private set; }
     public string Field2 { get; private set; }
 
+    private GameObject Button1;
+    private GameObject Button2;
+
     const string okMessage = "Ok";
     const string exitMessage = "Exit";
+
     public void CallWindow(WindowType type, string message, UnityAction action1 = null, UnityAction action2 = null, string actionMessage1 = okMessage, string actionMessage2 = exitMessage)
     {
+        if(Button1 == null)
+            Button1 = Buttons.Instance.SetButton(ButtonParent, "BTN1", null);
+
+        if(Button2 == null)
+            Button2 = Buttons.Instance.SetButton(ButtonParent, "BTN2", null);
+
         MainWindow.SetActive(true);
-        var isit = MainWindow.activeInHierarchy;
 
         switch (type)
         {
@@ -59,6 +65,13 @@ public class ModalWindow : MonoBehaviour
         }
     }
 
+    public void CloseWindow()
+    {
+        MainWindow.SetActive(false);
+        Button1.GetComponent<Button>().onClick.RemoveAllListeners();
+        Button2.GetComponent<Button>().onClick.RemoveAllListeners();
+    }
+
     private void OnInputButtonClick(UnityAction action)
     {
         Field1 = input1.text;
@@ -71,7 +84,7 @@ public class ModalWindow : MonoBehaviour
         info.text = message;
         DeactivateAll();
         Button1.SetActive(true);
-        buttonLabel1.text = okMessage;
+        Button1.GetComponentInChildren<Text>().text = okMessage;
     }
 
     private void CallSelectWindow(string message, string button1Message, string button2Message)
@@ -79,10 +92,10 @@ public class ModalWindow : MonoBehaviour
         info.text = message;
         DeactivateAll();
         Button1.SetActive(true);
-        buttonLabel1.text = button1Message;
+        Button1.GetComponentInChildren<Text>().text = button1Message;
 
         Button2.SetActive(true);
-        buttonLabel2.text = button2Message;
+        Button2.GetComponentInChildren<Text>().text = button2Message;
     }
 
     private void CallLoginWindow(string message)
@@ -93,8 +106,8 @@ public class ModalWindow : MonoBehaviour
 
         ActivateAll();
         info.text = message;
-        buttonLabel1.text = loginLabel;
-        buttonLabel2.text = registerLabel;
+        Button1.GetComponentInChildren<Text>().text = loginLabel;
+        Button2.GetComponentInChildren<Text>().text = registerLabel;
 
         label1.text = loginLabel;
         label2.text = passwordLabel;
