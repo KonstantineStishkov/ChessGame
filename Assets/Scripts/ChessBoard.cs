@@ -96,7 +96,7 @@ public class ChessBoard : MonoBehaviour
             return;
         }
 
-        if(isWhiteTurn && ai != Difficulty.None)
+        if (isWhiteTurn && ai != Difficulty.None)
         {
             isAITurn = true;
             EnemyTurn(ai);
@@ -171,8 +171,8 @@ public class ChessBoard : MonoBehaviour
                 else
                 {
                     currentlyDragging.SetPosition(GetTileCenter(previousPosition.x, previousPosition.y));
-                    HighlightTiles();
                     currentlyDragging = null;
+                    HighlightTiles();
                 }
             }
         }
@@ -363,6 +363,8 @@ public class ChessBoard : MonoBehaviour
 
     private void DisplayVictory(int winningTeam)
     {
+        isGameStarted = false;
+        GameUI.Instance.DisplayVictory(winningTeam);
         ModalWindow.SetActive(true);
     }
     public void OnResetButton()
@@ -458,7 +460,7 @@ public class ChessBoard : MonoBehaviour
     }
     private bool CheckForCheckMate()
     {
-        if(moveList.Count == 0)
+        if (moveList.Count == 0)
         {
             return false;
         }
@@ -477,7 +479,7 @@ public class ChessBoard : MonoBehaviour
                 if (cp.team == targetTeam)
                 {
                     deffendingPieces.Add(cp);
-                    if(cp.type == ChessPieceType.King)
+                    if (cp.type == ChessPieceType.King)
                     {
                         targetKing = cp;
                     }
@@ -496,7 +498,7 @@ public class ChessBoard : MonoBehaviour
         if (ContainsValidMove(ref currentAvailableMoves, new Vector2Int(targetKing.currentX, targetKing.currentY)))
         {
             // King is under attack> can we move something to help him?
-            foreach(var piece in deffendingPieces)
+            foreach (var piece in deffendingPieces)
             {
                 List<Vector2Int> defendingMoves = piece.GetAvailableMoves(ref chessPieces, TILE_COUNT_X, TILE_COUNT_Y);
                 SimulateMoveForPiece(piece, ref defendingMoves, targetKing);
@@ -633,9 +635,9 @@ public class ChessBoard : MonoBehaviour
         targetPosition = new Vector2Int();
         List<ChessPiece> availablePieces = new List<ChessPiece>();
 
-        foreach(ChessPiece piece in chessPieces)
+        foreach (ChessPiece piece in chessPieces)
         {
-            if(piece == null || piece.team != 0)
+            if (piece == null || piece.team != 0)
             {
                 continue;
             }
@@ -644,14 +646,14 @@ public class ChessBoard : MonoBehaviour
             availableMoves = piece.GetAvailableMoves(ref chessPieces, TILE_COUNT_X, TILE_COUNT_Y);
             PreventCheck(piece);
 
-            if(availableMoves.Count == 0)
+            if (availableMoves.Count == 0)
             {
                 continue;
             }
 
-            foreach(Vector2Int move in availableMoves)
+            foreach (Vector2Int move in availableMoves)
             {
-                if(chessPieces[move.x, move.y] != null && chessPieces[move.x, move.y].team != 0 && chessPieces[move.x, move.y].Value > value)
+                if (chessPieces[move.x, move.y] != null && chessPieces[move.x, move.y].team != 0 && chessPieces[move.x, move.y].Value > value)
                 {
                     value = chessPieces[move.x, move.y].Value;
                     cp = piece;
@@ -661,7 +663,7 @@ public class ChessBoard : MonoBehaviour
             }
         }
 
-        while(!isValid)
+        while (!isValid)
         {
             int rnd = Random.Range(0, availablePieces.Count - 1);
             Debug.LogFormat("List {0}, number {1}", availablePieces.Count, rnd);
@@ -712,11 +714,6 @@ public class ChessBoard : MonoBehaviour
     private void MoveTo(int originalX, int originalY, int destinationX, int destinationY)
     {
         ChessPiece cp = chessPieces[originalX, originalY];
-        //if(availableMoves.Count == 0)
-        //{
-        //    if (CheckForCheckMate())
-        //        CheckMate(cp.team);
-        //}
 
         Vector2Int previousPosition = new Vector2Int(originalX, originalY);
 
@@ -749,6 +746,11 @@ public class ChessBoard : MonoBehaviour
         moveList.Add(new Vector2Int[] { previousPosition, new Vector2Int(destinationX, destinationY) });
 
         ProcessSpecialMove();
+
+        if (currentlyDragging)
+            currentlyDragging = null;
+
+        HighlightTiles();
 
         if (CheckForCheckMate())
             CheckMate(cp.team);
@@ -854,7 +856,7 @@ public class ChessBoard : MonoBehaviour
         welcome.AssignedTeam = ++playerCount;
         Server.Instance.SendToClient(connection, message);
 
-        if(playerCount > 0)
+        if (playerCount > 0)
         {
             Server.Instance.Broadcast(new NetStartGame());
             StatusBar.ShowMessage(MessageType.Info, "Connection Successful. Game is about to start");
@@ -889,7 +891,7 @@ public class ChessBoard : MonoBehaviour
 
         Debug.Log($"MakeMove: {move.teamId} : {move.originalX} {move.originalY} -> {move.destinationX} {move.destinationY}");
 
-        if(move.teamId != currentTeam)
+        if (move.teamId != currentTeam)
         {
             ChessPiece target = chessPieces[move.originalX, move.originalY];
 

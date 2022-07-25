@@ -7,6 +7,15 @@ using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
+    #region string Constants
+    const string cancelLabel = "Cancel";
+    const string exitLabel = "Exit";
+    const string loginLabel = "Login";
+    const string registerLabel = "Register";
+    const string mailLabel = "E-mail";
+    const string passwordLabel = "Password";
+    const string tryAgainLabel = "Try Again";
+    #endregion
     #region Properties
     [Header("Menus")]
     [SerializeField] GameObject MainMenu;
@@ -33,6 +42,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] Client client;
     [SerializeField] Buttons buttons;
     [SerializeField] ModalWindow window;
+    [SerializeField] GameObject modalWindowButtons;
 
     [Header("Chess Board")]
     [SerializeField] ChessBoard chessBoard;
@@ -50,11 +60,13 @@ public class GameUI : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        buttons.Awake();
         ChangeCamera(CameraAngle.menu);
         MakeButtons();
         ProcessAuthentication();
     }
     #endregion
+    #region public Functions
     public void ChangeCamera(CameraAngle index)
     {
         for (int i = 0; i < cameraAngles.Length; i++)
@@ -62,13 +74,23 @@ public class GameUI : MonoBehaviour
 
         cameraAngles[(int)index].SetActive(true);
     }
+    public void DisplayVictory(int winningTeam)
+    {
+        const string rematchLabel = "Rematch";
+
+        string team = winningTeam == 0 ? "White" : "Black";
+        string victoryMessage = $"{team} team wins. Rematch?";
+        window.CallWindow(victoryMessage, () => { }, rematchLabel, () => { }, exitLabel);
+    }
+    #endregion
     private void ProcessAuthentication()
     {
+        const string loginMessage = "Please Input Login and Password to Login";
         HideAllMenus();
 
         if (player == null)
         {
-            window.CallWindow(WindowType.DoubleInput, "Please Input Login and Password to Login", OnLoginButton, OnRegisterButton, "Login", "Register");
+            window.CallWindow(loginMessage, OnLoginButton, loginLabel, OnRegisterButton, registerLabel, mailLabel, passwordLabel);
             dbAdapter = new MySqlAdapter();
         }
         else
@@ -103,24 +125,29 @@ public class GameUI : MonoBehaviour
     #region Get Name Window
     public void OnRegisterButton()
     {
-        if(!dbAdapter.RegisterNewUser(window.Field1, window.Field2))
+        const string wrongNameMessage = "User name has already taken";
+
+        if (!dbAdapter.RegisterNewUser(window.Field1, window.Field2))
         {
-            window.CallWindow(WindowType.Info, "User name has already taken", ProcessAuthentication);
+            window.CallWindow(wrongNameMessage, ProcessAuthentication, tryAgainLabel);
             player = null;
         }
     }
     public void OnLoginButton()
     {
+        const string wrongPasswordMessage = "Wrong login or password";
+        const string successMessage = "Successfully logged in";
+
         if (!dbAdapter.Login(window.Field1, window.Field2, out player))
         {
-            StatusBar.ShowMessage(MessageType.Warning, "Wrong login or password");
-            window.CallWindow(WindowType.Info, "Wrong login or password", ProcessAuthentication);
+            StatusBar.ShowMessage(MessageType.Warning, wrongPasswordMessage);
+            window.CallWindow(wrongPasswordMessage, ProcessAuthentication, "Try again");
             player = null;
         }
         else
         {
             ProcessAuthentication();
-            StatusBar.ShowMessage(MessageType.Info, "Successfully logged in");
+            StatusBar.ShowMessage(MessageType.Info, successMessage);
         }
     }
     #endregion
@@ -129,7 +156,6 @@ public class GameUI : MonoBehaviour
     {
         SetLocalGame?.Invoke(true);
         HideAllMenus();
-        Log.SetActive(true);
         ConnectToSelf();
     }
 
@@ -184,12 +210,14 @@ public class GameUI : MonoBehaviour
     #region Online Game Buttons
     public void OnHostGame()
     {
+        const string waitMessage = "Waiting for connection...";
+
         serverList.RegisterGameServer(port);
         serverList.RefreshServerList();
-        StatusBar.ShowMessage(MessageType.Info, "Waiting for connection...");
+        StatusBar.ShowMessage(MessageType.Info, waitMessage);
         ConnectToSelf();
         HideAllMenus();
-        window.CallWindow(WindowType.Info, "Waiting for connection...", OnStopHost);
+        window.CallWindow(waitMessage, OnStopHost, cancelLabel);
     }
 
     public void OnStopHost()
@@ -204,8 +232,9 @@ public class GameUI : MonoBehaviour
     }
     public void OnJoinDirectly()
     {
+        const string localIP = "127.0.0.1";
         HideAllMenus();
-        client.Init("127.0.0.1", port);
+        client.Init(localIP, port);
     }
 
     public void OnRefreshList()
@@ -240,14 +269,16 @@ public class GameUI : MonoBehaviour
         MainMenu.SetActive(false);
         DifficultyMenu.SetActive(false);
         OnlineMenu.SetActive(false);
+        Log.SetActive(true);
         Log.SetActive(false);
         Logo.SetActive(false);
     }
 
     private void ConnectToSelf()
     {
+        const string localIP = "127.0.0.1";
         server.Init(port);
-        client.Init("127.0.0.1", port);
+        client.Init(localIP, port);
     }
     #endregion
 }
