@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
@@ -41,7 +42,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] Server server;
     [SerializeField] Client client;
     [SerializeField] Buttons buttons;
-    [SerializeField] ModalWindow window;
+    [SerializeField] public ModalWindow window;
     [SerializeField] GameObject modalWindowButtons;
 
     [Header("Chess Board")]
@@ -75,13 +76,13 @@ public class GameUI : MonoBehaviour
 
         cameraAngles[(int)index].SetActive(true);
     }
-    public void DisplayVictory(int winningTeam)
+    public void DisplayVictory(int winningTeam, UnityAction action1, UnityAction action2)
     {
         const string rematchLabel = "Rematch";
 
         string team = winningTeam == 0 ? "White" : "Black";
         string victoryMessage = $"{team} team wins. Rematch?";
-        window.CallWindow(victoryMessage, () => { }, rematchLabel, () => { }, exitLabel);
+        window.CallWindow(victoryMessage, action1, rematchLabel, action2, exitLabel);
     }
     #endregion
     private void ProcessAuthentication()
@@ -249,6 +250,13 @@ public class GameUI : MonoBehaviour
         HideAllMenus();
         MainMenu.SetActive(true);
         Logo.SetActive(true);
+    }
+    #endregion
+    #region InGame Buttons
+    public void OnLeaveFromGame()
+    {
+        ChangeCamera(CameraAngle.menu);
+        MainMenu.SetActive(true);
     }
     #endregion
     #region Top Bar

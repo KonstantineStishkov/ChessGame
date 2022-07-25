@@ -14,6 +14,7 @@ public class ModalWindow : MonoBehaviour
 
     [Header("Text Fields")]
     [SerializeField] protected TextMeshProUGUI info;
+    [SerializeField] protected TextMeshProUGUI indicator;
     [SerializeField] protected TextMeshProUGUI label1;
     [SerializeField] protected TextMeshProUGUI label2;
 
@@ -34,6 +35,7 @@ public class ModalWindow : MonoBehaviour
 
     public void CallWindow(string message, UnityAction action, string actionMessage)
     {
+        DeactivateAll();
         MainWindow.SetActive(true);
         CheckButtons(1);
 
@@ -42,9 +44,10 @@ public class ModalWindow : MonoBehaviour
         ActivateButton(Button1, action, actionMessage);
     }
 
-    public void CallWindow(string message, UnityAction action1, string actionMessage1, 
+    public void CallWindow(string message, UnityAction action1, string actionMessage1,
                                            UnityAction action2, string actionMessage2)
     {
+        DeactivateAll();
         MainWindow.SetActive(true);
         CheckButtons(2);
 
@@ -58,6 +61,7 @@ public class ModalWindow : MonoBehaviour
                                            UnityAction action2, string actionMessage2,
                                            string inputLabel1, string inputLabel2)
     {
+        DeactivateAll();
         MainWindow.SetActive(true);
         CheckButtons(2);
 
@@ -68,8 +72,20 @@ public class ModalWindow : MonoBehaviour
 
         label1.text = inputLabel1;
         Input1.GetComponentInChildren<TMP_InputField>().onValueChanged.AddListener((value) => { Field1 = value; });
+        Input1.SetActive(true);
+
         label2.text = inputLabel2;
         Input2.GetComponentInChildren<TMP_InputField>().onValueChanged.AddListener((value) => { Field2 = value; });
+        Input2.SetActive(true);
+    }
+
+    public void SetIndicator(string indicatorMessage)
+    {
+        if (MainWindow.activeInHierarchy == false)
+            return;
+
+        indicator.text = indicatorMessage;
+        indicator.gameObject.SetActive(true);
     }
     private void ActivateButton(GameObject button, UnityAction action, string actionMessage)
     {
@@ -97,9 +113,17 @@ public class ModalWindow : MonoBehaviour
 
     protected void DeactivateAll()
     {
-        Input1.SetActive(false);
-        Input2.SetActive(false);
-        Button1.SetActive(false);
-        Button2.SetActive(false);
+        indicator.gameObject.SetActive(false);
+        if (Input1)
+            Input1.SetActive(false);
+
+        if (Input2)
+            Input2.SetActive(false);
+
+        if (Button1)
+            Button1.SetActive(false);
+
+        if (Button1)
+            Button2.SetActive(false);
     }
 }

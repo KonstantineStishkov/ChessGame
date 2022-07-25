@@ -26,9 +26,9 @@ public static class NetUtility
             case OpCode.MAKE_MOVE:
                 msg = new NetMakeMove(reader);
                 break;
-            //case OpCode.REMATCH: 
-            //    msg = new NetRematch(reader); 
-            //    break;
+            case OpCode.REMATCH:
+                msg = new NetRematch(reader);
+                break;
             default:
                 Debug.LogError("Message received had no OpCode");
                 break;
