@@ -23,7 +23,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WhiteTeam
+  m_Name: WhiteTeam HDRP
   m_Shader: {fileID: -6465566751694194690, guid: c28bb37ced75c094faa86ea19e772801, type: 3}
   m_ValidKeywords:
   - _DISABLE_DECALS

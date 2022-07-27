@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Networking.Transport;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
 public enum SpecialMove
@@ -41,6 +42,7 @@ public class ChessBoard : MonoBehaviour
     [Header("Prefabs & Materials")]
     [SerializeField] private GameObject[] prefabs;
     [SerializeField] private Material[] teamMaterials;
+    [SerializeField] private Material[] boardMaterials;
 
     private ChessPiece[,] chessPieces;
     private ChessPiece currentlyDragging;
@@ -304,10 +306,11 @@ public class ChessBoard : MonoBehaviour
     private ChessPiece SpawnSinglePiece(ChessPieceType type, int team)
     {
         ChessPiece cp = Instantiate(prefabs[(int)type - 1], transform).GetComponent<ChessPiece>();
+        int materialOffset = GetMaterialOffset();
 
         cp.type = type;
         cp.team = team;
-        cp.GetComponent<MeshRenderer>().material = teamMaterials[team];
+        cp.GetComponent<MeshRenderer>().material = teamMaterials[team + materialOffset];
         cp.SetScale(Vector3.one * aliveSize);
 
         return cp;
@@ -965,6 +968,35 @@ public class ChessBoard : MonoBehaviour
         Client.Instance.Shutdown();
         Server.Instance.Shutdown();
     }
+    public void SwitchRender()
+    {
+        int materialOffset = GetMaterialOffset();
+
+        if (chessPieces == null)
+            return;
+
+        foreach (var cp in chessPieces)
+            if (cp != null)
+                cp.GetComponent<MeshRenderer>().material = teamMaterials[cp.team + materialOffset];
+    }
+
+    private int GetMaterialOffset()
+    {
+        MeshRenderer renderer = GetComponent<MeshRenderer>();
+        int materialOffset = 0;
+        if (Settings.Instance.RenderIndex == 0)
+        {
+            renderer.material = boardMaterials[0];
+        }
+        else
+        {
+            renderer.material = boardMaterials[1];
+            materialOffset = 2;
+        }
+
+        return materialOffset;
+    }
+
     public void StopHost()
     {
         playerCount = -1;
