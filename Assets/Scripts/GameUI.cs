@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,6 +24,9 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject DifficultyMenu;
     [SerializeField] GameObject OnlineMenu;
     [SerializeField] GameObject OnlineMenuButtons;
+    [SerializeField] GameObject SettingsMenuCategories;
+    [SerializeField] GameObject SettingsMenuLabels;
+    [SerializeField] GameObject SettingsMenuValues;
     [SerializeField] GameObject Log;
     [SerializeField] GameObject Logo;
     [SerializeField] GameObject ModalWindowObject;
@@ -42,6 +46,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] Server server;
     [SerializeField] Client client;
     [SerializeField] Buttons buttons;
+    [SerializeField] Inputs inputs;
     [SerializeField] public ModalWindow window;
     [SerializeField] GameObject modalWindowButtons;
 
@@ -65,6 +70,7 @@ public class GameUI : MonoBehaviour
         buttons.Awake();
         ChangeCamera(CameraAngle.menu);
         MakeButtons();
+        MakeInputs();
         ProcessAuthentication();
     }
     #endregion
@@ -122,6 +128,19 @@ public class GameUI : MonoBehaviour
         buttons.SetButton(DifficultyMenu, "Easy", OnEasyGameButton);
         buttons.SetButton(DifficultyMenu, "Medium", OnMediumGameButton);
         buttons.SetButton(DifficultyMenu, "Hard", OnHardGameButton);
+
+        buttons.SetButton(SettingsMenuCategories, "Apply", Settings.Instance.ApplySettings);
+        buttons.SetButton(SettingsMenuValues, "Back", OnBack);
+    }
+    private void MakeInputs()
+    {
+        List<string> graphicSets = new List<string>() { "Low", "High" };
+        inputs.SetDropList(SettingsMenu, graphicSets, Settings.Instance.SetRender);
+
+        List<string> resolutions = Settings.Instance.resolutions.Select(x => x.ToString()).ToList();
+        inputs.SetDropList(SettingsMenu, resolutions, Settings.Instance.SetResolution);
+
+        inputs.SetToggle(SettingsMenu, "Full Screen", Settings.Instance.SetFullScreen);
     }
     #region Get Name Window
     public void OnRegisterButton()
@@ -175,7 +194,8 @@ public class GameUI : MonoBehaviour
     }
     public void OnSettingsButton()
     {
-
+        HideAllMenus();
+        SettingsMenu.SetActive(true);
     }
     public void OnCreditsButton()
     {
@@ -276,6 +296,7 @@ public class GameUI : MonoBehaviour
     {
         MainMenu.SetActive(false);
         DifficultyMenu.SetActive(false);
+        SettingsMenu.SetActive(false);
         OnlineMenu.SetActive(false);
         Log.SetActive(true);
         Log.SetActive(false);
